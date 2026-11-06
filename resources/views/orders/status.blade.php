@@ -50,30 +50,82 @@
                 <!-- 1. PAYMENT PENDING ALERT (IF UNPAID) -->
                 @if(!$order->isPaid())
                     @if($order->payment_method === 'qris')
-                        <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-3xl p-6 shadow-md space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="bg-white/20 text-white text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">
-                                    Menunggu Pembayaran QRIS
-                                </span>
-                                <span class="text-xs font-bold text-amber-100">Batas: 15 Menit</span>
+                        <!-- DYNAMIC QRIS CARD (FIGMA DESIGN ACCURATE) -->
+                        <div class="bg-white border-2 border-orange-500/80 rounded-3xl p-5 sm:p-7 shadow-lg space-y-5 text-center relative overflow-hidden">
+                            <!-- Top Header -->
+                            <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-[#E84E1B] text-white text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider">
+                                        QRIS
+                                    </span>
+                                    <span class="text-xs font-extrabold text-zinc-900 tracking-tight">QRIS Dinamis Otomatis</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-[#E84E1B] bg-orange-50 border border-orange-200/60 px-3 py-1 rounded-full">
+                                    <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span id="countdown-timer">14:59</span>
+                                </div>
                             </div>
+
+                            <!-- Merchant & Amount Info -->
                             <div>
-                                <h3 class="text-xl sm:text-2xl font-black">Selesaikan Pembayaran QRIS</h3>
-                                <p class="text-xs sm:text-sm text-amber-100 mt-1">
-                                    Pesanan <strong class="text-white">{{ $order->order_number }}</strong> sebesar <strong class="text-white">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</strong> akan otomatis diteruskan ke dapur setelah QRIS terbayar.
+                                <p class="text-xs font-extrabold text-zinc-400 tracking-wider uppercase">
+                                    SUAP CIKINI · {{ $order->order_number }} · {{ $order->table_number }}
+                                </p>
+                                <div class="text-3xl sm:text-4xl font-black text-zinc-950 mt-1 tracking-tight">
+                                    Rp{{ number_format($order->total_amount, 0, ',', '.') }}
+                                </div>
+                                <p class="text-[11px] text-zinc-500 mt-1">
+                                    Nominal pembayaran otomatis terkunci di QRIS (tidak perlu ketik nominal)
                                 </p>
                             </div>
-                            <div class="bg-white text-zinc-900 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
-                                <div class="text-center sm:text-left">
-                                    <div class="text-xs font-bold text-zinc-500">Total Tagihan</div>
-                                    <div class="text-2xl font-black text-[#E84E1B]">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</div>
+
+                            <!-- Dynamic QR Code Container -->
+                            @php
+                                $qrisUrl = $order->payment->raw_response['qris_url'] ?? ('https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&data=' . urlencode($order->payment->qris_payload ?? ''));
+                            @endphp
+                            <div class="flex flex-col items-center">
+                                <div class="p-3.5 bg-white rounded-2xl border-2 border-zinc-200/90 shadow-md max-w-[240px] aspect-square flex items-center justify-center">
+                                    <img src="{{ $qrisUrl }}" alt="QRIS {{ $order->order_number }}" class="w-full h-full object-contain">
                                 </div>
+
+                                <!-- Download / Save QR Button -->
+                                <div class="mt-3 flex items-center gap-2">
+                                    <a href="{{ $qrisUrl }}" target="_blank" download="QRIS-{{ $order->order_number }}.png" class="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-2xs">
+                                        <svg class="w-4 h-4 text-[#E84E1B]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                                        <span>Unduh / Buka Gambar QR</span>
+                                    </a>
+                                </div>
+
+                                <!-- Step Guide -->
+                                <p class="text-[11px] sm:text-xs text-zinc-500 leading-relaxed max-w-sm mx-auto mt-2.5">
+                                    Buka aplikasi pembayaran pilihanmu (BCA, Mandiri, BRI, GoPay, OVO, DANA, dll). Scan langsung dari layar atau pilih QR dari galeri HP.
+                                </p>
+
+                                <!-- Acquirers Supported Pills -->
+                                <div class="flex flex-wrap items-center justify-center gap-1.5 mt-3 pt-3 border-t border-zinc-100 text-[10px] font-bold text-zinc-400">
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">BCA</span>
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">Mandiri</span>
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">BRI</span>
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">GoPay</span>
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">OVO</span>
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">DANA</span>
+                                    <span class="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded">ShopeePay</span>
+                                </div>
+                            </div>
+
+                            <!-- Actions: Check Status & Sandbox Simulation -->
+                            <div class="pt-2 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                                <button onclick="checkLiveOrderStatus(true)" class="w-full sm:w-auto px-5 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                                    <span>Cek Status Pembayaran</span>
+                                </button>
+
                                 <!-- Sandbox Simulation Form -->
-                                <form action="{{ route('payment.simulate', $order->order_number) }}" method="POST">
+                                <form action="{{ route('payment.simulate', $order->order_number) }}" method="POST" class="w-full sm:w-auto">
                                     @csrf
-                                    <button type="submit" class="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-1.5">
+                                    <button type="submit" class="w-full px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5" title="Klik untuk simulasi bayar berhasil tanpa uang asli">
                                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-                                        <span>Simulasi Bayar QRIS (Sandbox)</span>
+                                        <span>Simulasi Bayar Berhasil (Sandbox)</span>
                                     </button>
                                 </form>
                             </div>
@@ -364,14 +416,15 @@
 
         </div>
 
-        <!-- Real-Time Auto Polling Script -->
+        <!-- Real-Time Auto Polling & QRIS Countdown Script -->
         <script>
             const orderNumber = "{{ $order->order_number }}";
             let currentStatus = "{{ $order->status }}";
             let currentPaymentStatus = "{{ $order->payment_status }}";
+            const statusEndpoint = "{{ url('/api/orders') }}/" + encodeURIComponent(orderNumber) + "/status";
 
-            function checkLiveOrderStatus() {
-                fetch(`/api/orders/${orderNumber}/status`)
+            function checkLiveOrderStatus(manual = false) {
+                fetch(statusEndpoint)
                     .then(res => res.json())
                     .then(data => {
                         if (data && (data.status !== currentStatus || data.payment_status !== currentPaymentStatus)) {
@@ -382,14 +435,38 @@
                             
                             setTimeout(() => {
                                 window.location.reload();
-                            }, 1200);
+                            }, 1000);
+                        } else if (manual) {
+                            alert("Status saat ini: " + (data.payment_status_label || "Menunggu Pembayaran") + ". Sistem akan otomatis memperbarui tampilan saat pembayaran terdeteksi.");
                         }
                     })
-                    .catch(err => console.log('Polling error:', err));
+                    .catch(err => {
+                        console.log('Polling error:', err);
+                        if (manual) {
+                            alert("Sedang memeriksa status pesanan...");
+                        }
+                    });
             }
 
             // Poll every 3 seconds for seamless real-time order tracking
-            setInterval(checkLiveOrderStatus, 3000);
+            setInterval(() => checkLiveOrderStatus(false), 3000);
+
+            // 15-Minute Countdown Timer for QRIS
+            const timerEl = document.getElementById('countdown-timer');
+            if (timerEl) {
+                let secondsRemaining = 15 * 60;
+                const timerInterval = setInterval(() => {
+                    secondsRemaining--;
+                    if (secondsRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        timerEl.innerText = "00:00 (Kedaluwarsa)";
+                    } else {
+                        const m = Math.floor(secondsRemaining / 60).toString().padStart(2, '0');
+                        const s = (secondsRemaining % 60).toString().padStart(2, '0');
+                        timerEl.innerText = `${m}:${s}`;
+                    }
+                }, 1000);
+            }
         </script>
     @endif
 

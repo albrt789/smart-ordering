@@ -24,12 +24,60 @@ class PaymentGatewayService
      */
     public function createDynamicQris(Order $order): Payment
     {
-        $paymentCode = 'QRIS-' . str_replace('#', '', $order->order_number) . '-' . time();
-        $amount = $order->total_amount;
+        $cleanOrderNumber = str_replace('#', '', $order->order_number);
+        $paymentCode = 'QRIS-' . $cleanOrderNumber . '-' . time();
+        $amount = (int) $order->total_amount;
         $expiresAt = now()->addMinutes(15);
 
-        // Standard EMVCo-compliant QRIS Dynamic String payload
-        $rawQris = $this->generateEmvcoQrisString($order->order_number, $amount);
+        $rawQris = null;
+        $qrisImageUrl = null;
+
+        // 1. Check if production/live Midtrans credentials are provided in .env
+        if ($this->serverKey && !str_contains($this->serverKey, 'SUAPDEMOKEY')) {
+            try {
+                $isProduction = config('services.midtrans.is_production', false);
+                $endpoint = $isProduction 
+                    ? 'https://api.midtrans.com/v2/charge' 
+                    : 'https://api.sandbox.midtrans.com/v2/charge';
+
+                $midtransResponse = \Illuminate\Support\Facades\Http::withBasicAuth($this->serverKey, '')
+                    ->timeout(5)
+                    ->post($endpoint, [
+                        'payment_type' => 'qris',
+                        'transaction_details' => [
+                            'order_id' => $cleanOrderNumber . '-' . time(),
+                            'gross_amount' => $amount,
+                        ],
+                        'qris' => [
+                            'acquirer' => 'gopay',
+                        ],
+                    ]);
+
+                if ($midtransResponse->successful()) {
+                    $resJson = $midtransResponse->json();
+                    $rawQris = $resJson['qr_string'] ?? null;
+                    if (isset($resJson['actions'])) {
+                        foreach ($resJson['actions'] as $act) {
+                            if (($act['name'] ?? '') === 'generate-qr-code') {
+                                $qrisImageUrl = $act['url'];
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::warning('Midtrans live charge fallback to EMVCo generator: ' . $e->getMessage());
+            }
+        }
+
+        // 2. Standard EMVCo-compliant Dynamic QRIS Generator (ASPI & Bank Indonesia standard)
+        // Each order gets a completely unique payload with exact nominal & CRC16 checksum
+        if (!$rawQris) {
+            $rawQris = $this->generateEmvcoQrisString($order);
+        }
+
+        if (!$qrisImageUrl) {
+            $qrisImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&data=" . urlencode($rawQris);
+        }
 
         // Simpan transaksi di database
         $payment = Payment::create([
@@ -46,7 +94,8 @@ class PaymentGatewayService
                 'currency' => 'IDR',
                 'payment_type' => 'qris',
                 'transaction_status' => 'pending',
-                'qris_url' => "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($rawQris),
+                'qris_url' => $qrisImageUrl,
+                'qr_string' => $rawQris,
             ],
             'expires_at' => $expiresAt,
         ]);
@@ -62,6 +111,7 @@ class PaymentGatewayService
             'payload' => [
                 'payment_code' => $paymentCode,
                 'amount' => $amount,
+                'qris_payload' => $rawQris,
                 'expires_at' => $expiresAt->toDateTimeString(),
             ],
             'ip_address' => request()->ip(),
@@ -161,18 +211,72 @@ class PaymentGatewayService
     }
 
     /**
-     * Generate EMVCo QRIS dynamic string representation
+     * Generate standard EMVCo Dynamic QRIS String (Bank Indonesia / ASPI compliant)
+     * Every order gets a unique payload containing exact nominal, merchant, unique bill ID, and CRC16.
      */
-    private function generateEmvcoQrisString(string $orderNumber, int $amount): string
+    public function generateEmvcoQrisString(Order $order): string
     {
-        $cleanOrder = preg_replace('/[^A-Za-z0-9]/', '', $orderNumber);
-        $amtStr = (string) $amount;
-        
-        return "00020101021226600016ID.CO.QRIS.WWW01189360099900000000020215ID10200248000000520458125303360540" 
-            . $amtStr 
-            . "5802ID5911SUAP CIKINI6007JAKARTA61051033062160112" 
-            . $cleanOrder 
-            . "6304";
+        $cleanOrder = preg_replace('/[^A-Za-z0-9]/', '', $order->order_number);
+        $amount = (string) $order->total_amount;
+        $table = preg_replace('/[^A-Za-z0-9]/', '', $order->table_number ?? '01');
+
+        // Subtag 01 (Bill Ref) and Subtag 07 (Terminal/Table)
+        $subtag01 = '01' . sprintf('%02d', strlen($cleanOrder)) . $cleanOrder;
+        $subtag07 = '07' . sprintf('%02d', strlen($table)) . $table;
+        $tag62Value = $subtag01 . $subtag07;
+        $tag62 = '62' . sprintf('%02d', strlen($tag62Value)) . $tag62Value;
+
+        // Tag 54 (Amount - Exact & Dynamic!)
+        $tag54 = '54' . sprintf('%02d', strlen($amount)) . $amount;
+
+        // Merchant Account Information (Tag 26)
+        $merchantAccount = '0016ID.CO.QRIS.WWW01189360099900000000020215ID1020024800000';
+        $tag26 = '26' . sprintf('%02d', strlen($merchantAccount)) . $merchantAccount;
+
+        // Merchant Name & City (Tags 59 & 60)
+        $merchantName = 'SUAP CIKINI';
+        $tag59 = '59' . sprintf('%02d', strlen($merchantName)) . $merchantName;
+        $tag60 = '6007JAKARTA';
+        $tag61 = '610510330';
+
+        // Base payload without CRC (tag 63 with length indicator '6304')
+        $payload = '000201'                       // Payload Format Indicator
+            . '010212'                            // Point of Initiation Method: 12 = Dynamic QR
+            . $tag26                              // Merchant Account Info
+            . '52045812'                          // Merchant Category Code: 5812 (Restaurants)
+            . '5303360'                           // Transaction Currency: 360 (IDR)
+            . $tag54                              // Exact Transaction Amount
+            . '5802ID'                            // Country Code: ID
+            . $tag59                              // Merchant Name
+            . $tag60                              // Merchant City
+            . $tag61                              // Postal Code
+            . $tag62                              // Additional Data (Bill Ref & Terminal)
+            . '6304';                             // CRC tag and length
+
+        // Append 4-hex-digit CRC16-CCITT checksum
+        $crc = $this->calculateCrc16($payload);
+
+        return $payload . $crc;
+    }
+
+    /**
+     * Compute CRC16-CCITT (False / 0xFFFF poly 0x1021) for EMVCo QRIS specification
+     */
+    public function calculateCrc16(string $data): string
+    {
+        $crc = 0xFFFF;
+        $length = strlen($data);
+        for ($i = 0; $i < $length; $i++) {
+            $crc ^= (ord($data[$i]) << 8);
+            for ($j = 0; $j < 8; $j++) {
+                if (($crc & 0x8000) !== 0) {
+                    $crc = (($crc << 1) ^ 0x1021) & 0xFFFF;
+                } else {
+                    $crc = ($crc << 1) & 0xFFFF;
+                }
+            }
+        }
+        return strtoupper(str_pad(dechex($crc), 4, '0', STR_PAD_LEFT));
     }
 }
 
