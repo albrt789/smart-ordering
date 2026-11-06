@@ -96,10 +96,15 @@
                                     </a>
                                 </div>
 
-                                <!-- Step Guide -->
-                                <p class="text-[11px] sm:text-xs text-zinc-500 leading-relaxed max-w-sm mx-auto mt-2.5">
-                                    Buka aplikasi pembayaran pilihanmu (BCA, Mandiri, BRI, GoPay, OVO, DANA, dll). Scan langsung dari layar atau pilih QR dari galeri HP.
-                                </p>
+                                <!-- Step Guide & Sandbox Notice -->
+                                <div class="mt-3 bg-amber-50 border border-amber-200/80 rounded-xl p-3 text-left max-w-sm mx-auto">
+                                    <div class="flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+                                        <div class="text-[11px] text-amber-900 leading-relaxed">
+                                            <strong class="font-extrabold text-amber-950">Mode Sandbox (Simulasi):</strong> Dompet digital asli (BCA, GoPay, DANA di HP) terhubung ke Bank Indonesia nyata sehingga menolak QR simulasi/sandbox. Untuk mencoba pembayaran, klik tombol <strong>Simulasi Bayar Berhasil</strong> di bawah atau gunakan <a href="https://simulator.sandbox.midtrans.com/qris/index" target="_blank" class="underline font-bold text-amber-900 hover:text-amber-700">Simulator Midtrans</a>.
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Acquirers Supported Pills -->
                                 <div class="flex flex-wrap items-center justify-center gap-1.5 mt-3 pt-3 border-t border-zinc-100 text-[10px] font-bold text-zinc-400">
