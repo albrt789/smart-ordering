@@ -55,4 +55,27 @@ return [
         'reasoning_effort' => env('AI_REASONING_EFFORT', 'low'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Gateways (Midtrans / Xendit / Tripay)
+    |--------------------------------------------------------------------------
+    */
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'merchant_id' => env('MIDTRANS_MERCHANT_ID'),
+        'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
+    ],
+
+    'xendit' => [
+        'secret_key' => env('XENDIT_SECRET_KEY'),
+    ],
+
+    'tripay' => [
+        'api_key' => env('TRIPAY_API_KEY'),
+        'private_key' => env('TRIPAY_PRIVATE_KEY'),
+        'merchant_code' => env('TRIPAY_MERCHANT_CODE'),
+        'is_production' => (bool) env('TRIPAY_IS_PRODUCTION', false),
+    ],
+
 ];
