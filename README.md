@@ -33,6 +33,30 @@ Anda dapat melihat atau mengelola tabel-tabel ini kapan saja melalui **HeidiSQL*
 
 ---
 
+## 🤖 Konfigurasi AI Chat (Groq)
+
+Fitur **Suap AI** menggunakan [Groq API](https://console.groq.com) dengan model `openai/gpt-oss-120b`. Tambahkan konfigurasi berikut di file `.env`:
+
+```env
+AI_PROVIDER=groq
+AI_MODEL=openai/gpt-oss-120b
+GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxx
+AI_BASE_URL=https://api.groq.com/openai/v1
+AI_TIMEOUT=20
+AI_REASONING_EFFORT=low
+```
+
+Langkah singkat:
+1. Buat API key di [Groq Console → API Keys](https://console.groq.com/keys).
+2. Salin `.env.example` menjadi `.env` jika belum ada, lalu isi `GROQ_API_KEY`.
+3. Jalankan `php artisan config:clear` setelah mengubah `.env`.
+
+Catatan:
+- Jika `GROQ_API_KEY` kosong atau request ke Groq gagal, chat otomatis memakai **fallback engine lokal** berbasis data menu di database, jadi fitur tetap bisa dipakai.
+- Provider lain yang kompatibel dengan OpenAI (misalnya OpenRouter) masih bisa dipakai dengan mengubah `AI_PROVIDER`, `AI_BASE_URL`, dan `AI_MODEL`. Untuk OpenRouter, isi juga `AI_API_KEY`.
+
+---
+
 ## 🎨 Tampilan Layar (Blade Views)
 
 1. **`resources/views/menu/index.blade.php` (Layar 1: Menu Utama)**:

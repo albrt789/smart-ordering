@@ -35,10 +35,24 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | AI Assistant (Groq)
+    |--------------------------------------------------------------------------
+    |
+    | Default provider adalah Groq dengan model openai/gpt-oss-120b. Endpoint
+    | Groq kompatibel dengan OpenAI Chat Completions API, jadi provider lain
+    | (OpenRouter/OpenAI) masih bisa dipakai lewat environment variable.
+    |
+    */
+
     'ai' => [
+        'provider' => env('AI_PROVIDER', 'groq'),
         'model' => env('AI_MODEL', 'openai/gpt-oss-120b'),
-        'api_key' => env('AI_API_KEY', env('OPENROUTER_API_KEY', env('OPENAI_API_KEY'))),
-        'base_url' => env('AI_BASE_URL', 'https://openrouter.ai/api/v1'),
+        'api_key' => env('GROQ_API_KEY') ?: env('AI_API_KEY') ?: env('OPENROUTER_API_KEY') ?: env('OPENAI_API_KEY'),
+        'base_url' => env('AI_BASE_URL', 'https://api.groq.com/openai/v1'),
+        'timeout' => (int) env('AI_TIMEOUT', 20),
+        'reasoning_effort' => env('AI_REASONING_EFFORT', 'low'),
     ],
 
 ];

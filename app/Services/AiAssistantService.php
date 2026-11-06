@@ -9,15 +9,21 @@ use Illuminate\Support\Facades\Log;
 
 class AiAssistantService
 {
+    protected string $provider;
     protected string $model;
     protected ?string $apiKey;
     protected string $baseUrl;
+    protected int $timeout;
+    protected string $reasoningEffort;
 
     public function __construct()
     {
-        $this->model = config('services.ai.model', env('AI_MODEL', 'openai/gpt-oss-120b'));
-        $this->apiKey = config('services.ai.api_key', env('AI_API_KEY', env('OPENROUTER_API_KEY', env('OPENAI_API_KEY'))));
-        $this->baseUrl = rtrim(config('services.ai.base_url', env('AI_BASE_URL', 'https://openrouter.ai/api/v1')), '/');
+        $this->provider = strtolower((string) (config('services.ai.provider') ?: 'groq'));
+        $this->model = (string) (config('services.ai.model') ?: 'openai/gpt-oss-120b');
+        $this->apiKey = config('services.ai.api_key');
+        $this->baseUrl = rtrim((string) (config('services.ai.base_url') ?: 'https://api.groq.com/openai/v1'), '/');
+        $this->timeout = (int) config('services.ai.timeout', 20);
+        $this->reasoningEffort = (string) config('services.ai.reasoning_effort', 'low');
     }
 
     public function getActiveModel(): string
@@ -25,9 +31,14 @@ class AiAssistantService
         return $this->model;
     }
 
+    public function getActiveProvider(): string
+    {
+        return $this->provider;
+    }
+
     /**
      * Answer questions with strict Scope Restriction.
-     * Uses configured AI Model "openai/gpt-oss-120b" with intelligent local fallback.
+     * Uses Groq's "openai/gpt-oss-120b" (configurable) with intelligent local fallback.
      */
     public function reply(string $userPrompt, string $table = 'Meja 08'): array
     {
@@ -47,7 +58,7 @@ class AiAssistantService
         $setting = RestaurantSetting::getSettings();
         $products = Product::where('is_available', true)->with('category')->get();
 
-        // 2. Query configured LLM model "openai/gpt-oss-120b" if API key is provided
+        // 2. Query Groq (model "openai/gpt-oss-120b") if API key is provided
         if (!empty($this->apiKey)) {
             try {
                 $llmResult = $this->queryLlmModel($prompt, $table, $setting, $products);
@@ -64,33 +75,51 @@ class AiAssistantService
     }
 
     /**
-     * Query OpenAI/OpenRouter compatible endpoint for "openai/gpt-oss-120b"
+     * Query Groq's OpenAI-compatible endpoint for "openai/gpt-oss-120b".
      */
     protected function queryLlmModel(string $userPrompt, string $table, RestaurantSetting $setting, $products): ?array
     {
         $systemPrompt = $this->buildSystemPrompt($setting, $products, $table);
 
-        $response = Http::withToken($this->apiKey)
-            ->withHeaders([
+        $request = Http::withToken($this->apiKey)
+            ->acceptJson()
+            ->timeout($this->timeout);
+
+        // Header atribusi hanya diperlukan OpenRouter, bukan Groq.
+        if ($this->provider === 'openrouter') {
+            $request = $request->withHeaders([
                 'HTTP-Referer' => url('/'),
                 'X-Title' => 'SUAP Smart Ordering Restaurant AI',
-            ])
-            ->timeout(12)
-            ->post($this->baseUrl . '/chat/completions', [
-                'model' => $this->model, // 'openai/gpt-oss-120b'
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => $systemPrompt,
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $userPrompt,
-                    ],
-                ],
-                'temperature' => 0.3,
-                'max_tokens' => 450,
             ]);
+        }
+
+        $payload = [
+            'model' => $this->model, // 'openai/gpt-oss-120b'
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => $systemPrompt,
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $userPrompt,
+                ],
+            ],
+            'temperature' => 0.5,
+        ];
+
+        if ($this->provider === 'groq') {
+            $payload['max_completion_tokens'] = 600;
+
+            // gpt-oss mendukung reasoning_effort; "low" menjaga respons tetap cepat.
+            if ($this->reasoningEffort !== '') {
+                $payload['reasoning_effort'] = $this->reasoningEffort;
+            }
+        } else {
+            $payload['max_tokens'] = 600;
+        }
+
+        $response = $request->post($this->baseUrl . '/chat/completions', $payload);
 
         if (!$response->successful()) {
             Log::warning("LLM API request failed [{$response->status()}]: " . $response->body());
