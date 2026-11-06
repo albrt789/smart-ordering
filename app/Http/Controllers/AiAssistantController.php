@@ -25,9 +25,9 @@ class AiAssistantController extends Controller
             session(['current_table' => $table]);
         }
 
-        $messages = AiMessage::where('table_number', $table)->oldest()->get();
+        $messages = AiMessage::where('table_number', $table)->with('product')->oldest()->get();
         if ($messages->isEmpty()) {
-            $messages = AiMessage::oldest()->get();
+            $messages = AiMessage::with('product')->oldest()->get();
         }
 
         $cart = session('cart', []);

@@ -15,7 +15,7 @@ class AiMessage extends Model
 
     public function product()
     {
-        return $this->belongsTo(MenuItem::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }
 
