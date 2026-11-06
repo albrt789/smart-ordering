@@ -14,9 +14,10 @@
                 <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m0-7v3m4 0h3"/></svg>
                 <span>{{ $table }}</span>
             </div>
-            <span class="text-xs font-extrabold text-[#E84E1B] bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-full flex items-center gap-1">
+            <span class="text-xs font-extrabold text-[#E84E1B] bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-full flex items-center gap-1.5" title="Model: openai/gpt-oss-120b">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#E84E1B] animate-pulse"></span>
                 <span>AI Aktif</span>
+                <span class="text-[10px] bg-orange-100 text-[#E84E1B] px-1.5 py-0.2 rounded font-mono font-bold">gpt-oss-120b</span>
             </span>
         </div>
     </div>
@@ -39,6 +40,9 @@
                         <p class="text-xs text-zinc-500 mt-1">
                             Menu, bahan, dan pesanan — di satu chat.
                         </p>
+                        <span class="inline-block mt-1.5 text-[10px] font-mono text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-md">
+                            Engine: openai/gpt-oss-120b
+                        </span>
                     </div>
                 </div>
 

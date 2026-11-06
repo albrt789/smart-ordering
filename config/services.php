@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'ai' => [
+        'model' => env('AI_MODEL', 'openai/gpt-oss-120b'),
+        'api_key' => env('AI_API_KEY', env('OPENROUTER_API_KEY', env('OPENAI_API_KEY'))),
+        'base_url' => env('AI_BASE_URL', 'https://openrouter.ai/api/v1'),
+    ],
+
 ];

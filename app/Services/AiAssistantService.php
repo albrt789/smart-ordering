@@ -4,19 +4,37 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\RestaurantSetting;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AiAssistantService
 {
+    protected string $model;
+    protected ?string $apiKey;
+    protected string $baseUrl;
+
+    public function __construct()
+    {
+        $this->model = config('services.ai.model', env('AI_MODEL', 'openai/gpt-oss-120b'));
+        $this->apiKey = config('services.ai.api_key', env('AI_API_KEY', env('OPENROUTER_API_KEY', env('OPENAI_API_KEY'))));
+        $this->baseUrl = rtrim(config('services.ai.base_url', env('AI_BASE_URL', 'https://openrouter.ai/api/v1')), '/');
+    }
+
+    public function getActiveModel(): string
+    {
+        return $this->model;
+    }
+
     /**
      * Answer questions with strict Scope Restriction.
+     * Uses configured AI Model "openai/gpt-oss-120b" with intelligent local fallback.
      */
     public function reply(string $userPrompt, string $table = 'Meja 08'): array
     {
         $prompt = trim($userPrompt);
         $lower = strtolower($prompt);
 
-        // 1. Check if the prompt is within the permitted restaurant domain
+        // 1. Strict Fast Guardrail: Check if the prompt is outside permitted restaurant domain
         if (!$this->isWithinScope($lower)) {
             return [
                 'text' => 'Pertanyaan tidak sesuai.',
@@ -29,7 +47,146 @@ class AiAssistantService
         $setting = RestaurantSetting::getSettings();
         $products = Product::where('is_available', true)->with('category')->get();
 
-        // 2. Location / Address Query
+        // 2. Query configured LLM model "openai/gpt-oss-120b" if API key is provided
+        if (!empty($this->apiKey)) {
+            try {
+                $llmResult = $this->queryLlmModel($prompt, $table, $setting, $products);
+                if ($llmResult !== null) {
+                    return $llmResult;
+                }
+            } catch (\Exception $e) {
+                Log::warning("AI LLM call ({$this->model}) fallback to local engine: " . $e->getMessage());
+            }
+        }
+
+        // 3. Fallback: Local database-backed intelligent restaurant engine
+        return $this->localEngineReply($lower, $table, $setting, $products);
+    }
+
+    /**
+     * Query OpenAI/OpenRouter compatible endpoint for "openai/gpt-oss-120b"
+     */
+    protected function queryLlmModel(string $userPrompt, string $table, RestaurantSetting $setting, $products): ?array
+    {
+        $systemPrompt = $this->buildSystemPrompt($setting, $products, $table);
+
+        $response = Http::withToken($this->apiKey)
+            ->withHeaders([
+                'HTTP-Referer' => url('/'),
+                'X-Title' => 'SUAP Smart Ordering Restaurant AI',
+            ])
+            ->timeout(12)
+            ->post($this->baseUrl . '/chat/completions', [
+                'model' => $this->model, // 'openai/gpt-oss-120b'
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => $systemPrompt,
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $userPrompt,
+                    ],
+                ],
+                'temperature' => 0.3,
+                'max_tokens' => 450,
+            ]);
+
+        if (!$response->successful()) {
+            Log::warning("LLM API request failed [{$response->status()}]: " . $response->body());
+            return null;
+        }
+
+        $replyText = trim($response->json('choices.0.message.content', ''));
+        if (empty($replyText)) {
+            return null;
+        }
+
+        // Strict enforcement: if model detects out of scope
+        if (str_contains(strtolower($replyText), 'pertanyaan tidak sesuai')) {
+            return [
+                'text' => 'Pertanyaan tidak sesuai.',
+                'has_allergen_warning' => false,
+                'product_id' => null,
+                'show_cart_ready_card' => false,
+            ];
+        }
+
+        // Detect if any product from menu was mentioned or recommended
+        $foundProductId = null;
+        foreach ($products as $prod) {
+            if (stripos($replyText, $prod->name) !== false) {
+                $foundProductId = $prod->id;
+                break;
+            }
+        }
+
+        // Check if allergen warning is relevant
+        $hasAllergenWarning = false;
+        $allergenKeywords = ['alergi', 'kacang', 'susu', 'gluten', 'terigu', 'udang', 'terasi', 'telur'];
+        foreach ($allergenKeywords as $akw) {
+            if (stripos($replyText, $akw) !== false || stripos($userPrompt, $akw) !== false) {
+                $hasAllergenWarning = true;
+                break;
+            }
+        }
+
+        return [
+            'text' => $replyText,
+            'has_allergen_warning' => $hasAllergenWarning,
+            'product_id' => $foundProductId,
+            'show_cart_ready_card' => stripos($userPrompt, 'pesan') !== false || stripos($userPrompt, 'tambah') !== false,
+        ];
+    }
+
+    /**
+     * Build rich system prompt with database menu, allergens, and strict scope restriction
+     */
+    protected function buildSystemPrompt(RestaurantSetting $setting, $products, string $table): string
+    {
+        $menuList = [];
+        foreach ($products as $p) {
+            $cat = $p->category->name ?? 'Menu';
+            $price = number_format($p->price, 0, ',', '.');
+            $stockInfo = $p->track_stock ? "Stok: {$p->stock} porsi" : "Stok: tersedia";
+            $menuList[] = "- {$p->name} ({$cat}, Rp{$price}) | Deskripsi: {$p->description} | Komposisi: {$p->composition} | Alergen: {$p->allergens} | Waktu masak: {$p->prep_time_minutes} mnt | {$stockInfo}";
+        }
+        $menuText = implode("\n", $menuList);
+
+        return <<<PROMPT
+Anda adalah "Suap AI", asisten informasi resmi restoran SUAP. Cikini untuk melayani pelanggan di {$table}.
+
+TUGAS ANDA:
+1. Menjawab komposisi, bahan baku, dan informasi alergen makanan/minuman.
+2. Memberikan rekomendasi menu berdasarkan data menu yang tersedia.
+3. Memberikan estimasi waktu pembuatan makanan/minuman.
+4. Memberikan informasi lokasi, jam operasional, kontak, dan profil restoran.
+5. Menjelaskan alur pemesanan mandiri & pembayaran QRIS dinamis langsung dari meja.
+
+DATA RESMI RESTORAN:
+- Nama: {$setting->name} ({$setting->branch})
+- Profil: {$setting->description}
+- Alamat: {$setting->address}
+- Jam Operasional: {$setting->open_hours}
+- Kontak: Telepon/WA: {$setting->phone}, Email: {$setting->email}
+
+DAFTAR MENU RESMI DARI DATABASE:
+{$menuText}
+
+ATURAN WAJIB & PEMBATASAN TOPIK (STRICT SCOPE RESTRICTION):
+Jika pelanggan bertanya hal di luar informasi restoran, menu, alergen, dan layanan pemesanan makanan (misalnya tentang politik, cuaca dunia, coding, matematika, pengetahuan umum, dll), ANDA WAJIB MENJAWAB HANYA DENGAN KALIMAT PERSIS:
+"Pertanyaan tidak sesuai."
+Jangan memberikan jawaban atau penjelasan apa pun untuk topik di luar restoran.
+Jawablah dengan ramah, sopan, dan ringkas dalam Bahasa Indonesia.
+PROMPT;
+    }
+
+    /**
+     * Fallback database-backed local engine
+     */
+    protected function localEngineReply(string $lower, string $table, RestaurantSetting $setting, $products): array
+    {
+        // Location / Address Query
         if (str_contains($lower, 'lokasi') || str_contains($lower, 'alamat') || str_contains($lower, 'dimana restoran') || str_contains($lower, 'tempat')) {
             return [
                 'text' => "Restoran {$setting->name} ({$setting->branch}) beralamat di: {$setting->address}.",
@@ -39,7 +196,7 @@ class AiAssistantService
             ];
         }
 
-        // 3. Operating Hours Query
+        // Operating Hours Query
         if (str_contains($lower, 'jam buka') || str_contains($lower, 'jam operasional') || str_contains($lower, 'buka jam') || str_contains($lower, 'tutup jam')) {
             return [
                 'text' => "Jam operasional {$setting->name} adalah {$setting->open_hours}. Kami melayani makan di tempat (dine-in) dengan pemesanan langsung dari meja.",
@@ -49,7 +206,7 @@ class AiAssistantService
             ];
         }
 
-        // 4. Contact Information Query
+        // Contact Information Query
         if (str_contains($lower, 'kontak') || str_contains($lower, 'nomor') || str_contains($lower, 'telepon') || str_contains($lower, 'wa') || str_contains($lower, 'email')) {
             return [
                 'text' => "Anda dapat menghubungi layanan pelanggan {$setting->name} melalui Telepon/WhatsApp: {$setting->phone} atau Email: {$setting->email}.",
@@ -59,7 +216,7 @@ class AiAssistantService
             ];
         }
 
-        // 5. Restaurant Profile Query
+        // Restaurant Profile Query
         if (str_contains($lower, 'profil') || str_contains($lower, 'tentang restoran') || str_contains($lower, 'tentang suap') || str_contains($lower, 'apa itu suap')) {
             return [
                 'text' => "{$setting->name} ({$setting->branch}) — {$setting->description} Setiap meja dilengkapi QR Code unik untuk kemudahan pemesanan mandiri dan pembayaran QRIS tanpa antre.",
@@ -69,9 +226,8 @@ class AiAssistantService
             ];
         }
 
-        // 6. Allergens & Composition Query
+        // Allergens & Composition Query
         if (str_contains($lower, 'alergi') || str_contains($lower, 'komposisi') || str_contains($lower, 'bahan') || str_contains($lower, 'kandungan') || str_contains($lower, 'susu') || str_contains($lower, 'kacang') || str_contains($lower, 'gluten') || str_contains($lower, 'udang') || str_contains($lower, 'nabati') || str_contains($lower, 'vegan')) {
-            // Check specific dish mentioned
             foreach ($products as $prod) {
                 if (str_contains($lower, strtolower($prod->name)) || str_contains($lower, strtolower(explode(' ', $prod->name)[0]))) {
                     $compositionInfo = $prod->composition ? " Komposisi: {$prod->composition}." : "";
@@ -85,7 +241,6 @@ class AiAssistantService
                 }
             }
 
-            // General vegan / plant based query (matching Screenshot 3)
             if (str_contains($lower, 'nabati') || str_contains($lower, 'vegan') || str_contains($lower, 'tanpa susu')) {
                 $jamur = $products->firstWhere('slug', 'jamur-crispy');
                 return [
@@ -104,7 +259,7 @@ class AiAssistantService
             ];
         }
 
-        // 7. Cooking / Preparation Time Estimate Query
+        // Cooking / Preparation Time Estimate Query
         if (str_contains($lower, 'waktu') || str_contains($lower, 'estimasi') || str_contains($lower, 'berapa menit') || str_contains($lower, 'lama pembuatan') || str_contains($lower, 'berapa lama')) {
             return [
                 'text' => 'Estimasi waktu penyiapan makanan kami berkisar antara 10–20 menit untuk hidangan utama (seperti Ayam Sambal Matah & Mie Ayam), serta 3–5 menit untuk aneka minuman segar.',
@@ -114,7 +269,7 @@ class AiAssistantService
             ];
         }
 
-        // 8. Menu Recommendations Query
+        // Menu Recommendations Query
         if (str_contains($lower, 'rekomendasi') || str_contains($lower, 'paling laris') || str_contains($lower, 'favorit') || str_contains($lower, 'enak') || str_contains($lower, 'pedas') || str_contains($lower, 'minuman') || str_contains($lower, 'menu')) {
             if (str_contains($lower, 'pedas') || str_contains($lower, 'sambal')) {
                 $ayam = $products->firstWhere('slug', 'ayam-sambal-matah');
@@ -145,9 +300,8 @@ class AiAssistantService
             ];
         }
 
-        // 9. Ordering & Delivery Flow (Table Dine-In)
+        // Ordering & Delivery Flow (Table Dine-In)
         if (str_contains($lower, 'pesan') || str_contains($lower, 'bayar') || str_contains($lower, 'qris') || str_contains($lower, 'kasir') || str_contains($lower, 'antar') || str_contains($lower, 'tambah')) {
-            $tableNum = str_replace('Meja ', '', $table);
             return [
                 'text' => "Pemesanan dilakukan langsung dari mejamu. Setelah memesan, Anda dapat membayar menggunakan QRIS dinamis di smartphone atau membayar tunai ke kasir. Pesanan yang lunas akan langsung kami antar ke {$table}. ✨",
                 'has_allergen_warning' => false,
@@ -156,7 +310,7 @@ class AiAssistantService
             ];
         }
 
-        // Default restaurant greeting for valid context
+        // Default restaurant greeting
         return [
             'text' => "Halo! Aku asisten pintar Suap untuk {$table}. Kamu dapat bertanya tentang bahan menu, rekomendasi hidangan, info alergi, waktu pembuatan, jam buka, hingga lokasi restoran.",
             'has_allergen_warning' => false,
