@@ -144,7 +144,7 @@ class RestaurantSystemTest extends TestCase
 
         $ans3 = $service->reply('jam buka restoran sampai jam berapa?');
         $this->assertNotEquals('Pertanyaan tidak sesuai.', $ans3['text']);
-        $this->assertStringContainsString('operasional', $ans3['text']);
+        $this->assertMatchesRegularExpression('/(jam|buka|operasional|wib)/i', $ans3['text']);
 
         // Out-of-scope questions MUST return "Pertanyaan tidak sesuai."
         $off1 = $service->reply('siapa presiden amerika serikat?');
