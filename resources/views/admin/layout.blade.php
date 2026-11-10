@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Admin Panel' }} — SUAP Restoran</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23E11D48'/><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='42' fill='white'>A.</text></svg>">
+    <title>{{ $title ?? 'Admin Panel' }} — Fountain Hide</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,12 +25,12 @@
         <!-- Brand & Logo -->
         <div>
             <div class="p-6 border-b border-zinc-800/80 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-rose-600 text-white font-black text-lg flex items-center justify-center shadow-lg shadow-rose-950/50">
-                    S.
+                <div class="w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 p-2 flex items-center justify-center shadow-lg">
+                    <img src="{{ asset('images/logo-white.png') }}" alt="Logo" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-base font-black text-white tracking-tight">SUAP Admin</h1>
-                    <span class="text-[11px] text-zinc-400">Portal Operasional & HRD</span>
+                    <h1 class="text-base font-black text-white tracking-tight uppercase">Fountain Hide</h1>
+                    <span class="text-[11px] text-zinc-400">Portal Operasional & Cafe</span>
                 </div>
             </div>
 
@@ -88,7 +88,7 @@
                 </div>
                 <div class="text-xs">
                     <div class="font-bold text-white">{{ Auth::user()->name ?? 'Administrator' }}</div>
-                    <div class="text-zinc-400 text-[10px]">{{ Auth::user()->email ?? 'admin@suap.id' }}</div>
+                    <div class="text-zinc-400 text-[10px]">{{ Auth::user()->email ?? 'admin@fountainhide.com' }}</div>
                 </div>
             </div>
 
@@ -107,8 +107,8 @@
         <!-- Topbar Mobile -->
         <header class="bg-zinc-900 border-b border-zinc-800 px-4 py-3 flex md:hidden items-center justify-between sticky top-0 z-20">
             <div class="flex items-center gap-2">
-                <span class="w-7 h-7 rounded-lg bg-rose-600 text-white font-black text-xs flex items-center justify-center">S.</span>
-                <span class="font-black text-sm text-white">SUAP Admin</span>
+                <img src="{{ asset('images/logo-white.png') }}" class="h-6 w-auto object-contain">
+                <span class="font-black text-sm text-white uppercase">Fountain Hide Admin</span>
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('admin.dashboard') }}" class="text-xs text-zinc-300 px-2 py-1 bg-zinc-800 rounded-lg">Dashboard</a>

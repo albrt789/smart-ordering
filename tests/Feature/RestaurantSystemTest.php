@@ -20,21 +20,21 @@ class RestaurantSystemTest extends TestCase
         $response = $this->get('/?meja=05');
         $response->assertStatus(200);
         $response->assertSee('Meja 05');
-        $response->assertSee('Ayam Sambal Matah');
+        $response->assertSee('Number 1');
     }
 
     public function test_customer_can_view_product_detail()
     {
-        $response = $this->get('/menu/ayam-sambal-matah');
+        $response = $this->get('/menu/number-1');
         $response->assertStatus(200);
-        $response->assertSee('Ayam Sambal Matah');
-        $response->assertSee('Pilih nasi');
-        $response->assertSee('Sambalnya gimana?');
+        $response->assertSee('Number 1');
+        $response->assertSee('Pilihan Es');
+        $response->assertSee('Tingkat Manis');
     }
 
     public function test_customer_can_add_to_cart_and_checkout_with_qris()
     {
-        $product = Product::where('slug', 'ayam-sambal-matah')->first();
+        $product = Product::where('slug', 'number-1')->first();
 
         // 1. Add to cart
         $cartData = [
@@ -78,7 +78,7 @@ class RestaurantSystemTest extends TestCase
 
     public function test_customer_can_checkout_with_cash_and_cashier_confirms()
     {
-        $product = Product::where('slug', 'es-teh-leci')->first();
+        $product = Product::where('slug', 'peach-tea')->first();
 
         $cartData = [
             'item-test-cash' => [
@@ -134,17 +134,32 @@ class RestaurantSystemTest extends TestCase
         $service = app(AiAssistantService::class);
 
         // Valid restaurant questions
-        $ans1 = $service->reply('apakah jamur crispy mengandung susu dan kacang?');
+        $ans1 = $service->reply('apakah butterscotch latte mengandung susu dan kacang?');
         $this->assertNotEquals('Pertanyaan tidak sesuai.', $ans1['text']);
-        $this->assertStringContainsString('Jamur Crispy', $ans1['text']);
+        $this->assertStringContainsString('Butterscotch', $ans1['text']);
 
-        $ans2 = $service->reply('dimana lokasi dan alamat restoran suap?');
+        $ans2 = $service->reply('dimana lokasi dan alamat coffee shop fountain hide?');
         $this->assertNotEquals('Pertanyaan tidak sesuai.', $ans2['text']);
-        $this->assertStringContainsString('Cikini', $ans2['text']);
+        $this->assertMatchesRegularExpression('/(tirta bhakti|senopati|jakarta|fountain)/i', $ans2['text']);
 
         $ans3 = $service->reply('jam buka restoran sampai jam berapa?');
         $this->assertNotEquals('Pertanyaan tidak sesuai.', $ans3['text']);
         $this->assertMatchesRegularExpression('/(jam|buka|operasional|wib)/i', $ans3['text']);
+
+        $ans4 = $service->reply('ceritakan sejarah dan kapan fountain hide dibangun?');
+        $this->assertNotEquals('Pertanyaan tidak sesuai.', $ans4['text']);
+        $this->assertMatchesRegularExpression('/(fountain|hide|tirta bhakti|sanctuary|didirikan|dibangun)/i', $ans4['text']);
+
+        $ans5 = $service->reply('rekomendasikan minuman manis');
+        $this->assertNotEquals('Pertanyaan tidak sesuai.', $ans5['text']);
+        $this->assertMatchesRegularExpression('/(butterscotch|latte|manis|number 1)/i', $ans5['text']);
+
+        // Special Easter Egg: "apakah manda cantik?"
+        $mandaAns = $service->reply('apakah manda cantik?');
+        $this->assertEquals('IYAAAA CANTIK BANGET SEPERTI ADA WONG, MUNGKIN DIA ADALAH MANDA WONG APALAGI RAMBUT PENDEKNYA ITU LUCU DAN MEMBUAT JATUH CINTA', $mandaAns['text']);
+
+        $mandaAns2 = $service->reply('manda cantik gak');
+        $this->assertEquals('IYAAAA CANTIK BANGET SEPERTI ADA WONG, MUNGKIN DIA ADALAH MANDA WONG APALAGI RAMBUT PENDEKNYA ITU LUCU DAN MEMBUAT JATUH CINTA', $mandaAns2['text']);
 
         // Out-of-scope questions MUST return "Pertanyaan tidak sesuai."
         $off1 = $service->reply('siapa presiden amerika serikat?');
@@ -169,7 +184,7 @@ class RestaurantSystemTest extends TestCase
 
         $dash = $this->get('/kasir');
         $dash->assertStatus(200);
-        $dash->assertSee('Kasir SUAP.');
+        $dash->assertSee('Fountain Hide');
 
         // Cashier cannot access /admin (redirected to admin login with alert)
         $adminAccess = $this->get('/admin');
@@ -199,7 +214,7 @@ class RestaurantSystemTest extends TestCase
 
     public function test_customer_cannot_order_out_of_stock_product()
     {
-        $product = Product::where('slug', 'es-teh-leci')->first();
+        $product = Product::where('slug', 'peach-tea')->first();
         $product->update(['stock' => 0, 'daily_stock' => 50, 'track_stock' => true]);
 
         // Customer attempts to add out-of-stock item
@@ -217,7 +232,7 @@ class RestaurantSystemTest extends TestCase
 
     public function test_checkout_decrements_product_stock()
     {
-        $product = Product::where('slug', 'mie-ayam-suap')->first();
+        $product = Product::where('slug', 'vanilla-latte')->first();
         $initialStock = 25;
         $product->update(['stock' => $initialStock, 'daily_stock' => 50, 'track_stock' => true]);
 
@@ -247,7 +262,7 @@ class RestaurantSystemTest extends TestCase
         $admin = User::where('role', 'admin')->first();
         $this->actingAs($admin);
 
-        $product = Product::where('slug', 'jamur-crispy')->first();
+        $product = Product::where('slug', 'nobb')->first();
         $product->update(['daily_stock' => 40, 'stock' => 40, 'track_stock' => true]);
 
         // 1. Admin updates stock to 5
@@ -261,5 +276,43 @@ class RestaurantSystemTest extends TestCase
         $resetResp = $this->post('/admin/menu/reset-daily-stock');
         $resetResp->assertRedirect();
         $this->assertEquals(40, $product->fresh()->stock);
+    }
+
+    public function test_fountain_hide_coffee_shop_branding_and_features()
+    {
+        // 1. Customer visits home menu and verifies Fountain Hide branding & coffee signature
+        $menuResp = $this->get('/?meja=08');
+        $menuResp->assertStatus(200);
+        $menuResp->assertSee('FOUNTAIN HIDE');
+        $menuResp->assertSee('Number 1');
+        $menuResp->assertSee('Signatures');
+
+        // 2. Customer views signature coffee product detail
+        $productResp = $this->get('/menu/number-1');
+        $productResp->assertStatus(200);
+        $productResp->assertSee('Number 1');
+        $productResp->assertSee('SIGNATURE');
+        $productResp->assertSee('Pilihan Susu');
+
+        // 3. Digital receipt displays Fountain Hide branding
+        $order = Order::first();
+        if ($order) {
+            $receiptResp = $this->get('/orders/receipt/' . urlencode($order->order_number));
+            $receiptResp->assertStatus(200);
+            $receiptResp->assertSee('Fountain Hide');
+        }
+
+        // 4. Cashier and Admin login authentication using @fountainhide.com
+        $cashierAuth = $this->post('/kasir/login', [
+            'email' => 'kasir@fountainhide.com',
+            'password' => 'kasir123',
+        ]);
+        $cashierAuth->assertRedirect('/kasir');
+
+        $adminAuth = $this->post('/admin/login', [
+            'email' => 'admin@fountainhide.com',
+            'password' => 'admin123',
+        ]);
+        $adminAuth->assertRedirect('/admin');
     }
 }

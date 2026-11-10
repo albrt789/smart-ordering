@@ -14,16 +14,16 @@ return new class extends Migration
         // 1. Restaurant Settings
         Schema::create('restaurant_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->default('SUAP.');
-            $table->string('branch')->default('Suap, Cikini');
+            $table->string('name')->default('Fountain Hide');
+            $table->string('branch')->default('Fountain Hide Coffee & Roastery');
             $table->text('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->string('open_hours')->default('10:00 - 22:00 WIB');
+            $table->string('open_hours')->default('08:00 - 23:00 WIB');
             $table->decimal('service_fee_pct', 5, 2)->default(5.00); // 5%
             $table->decimal('pbjt_tax_pct', 5, 2)->default(10.00); // 10%
             $table->text('description')->nullable();
-            $table->string('logo')->nullable();
+            $table->string('logo')->default('/images/logo.png');
             $table->timestamps();
         });
 

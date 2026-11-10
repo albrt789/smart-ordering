@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{ $title ?? 'SUAP. — Enaknya, Langsung Suap | Smart Dine-In QR' }}</title>
+    <title>{{ $title ?? 'Fountain Hide — Specialty Coffee & Roastery | Smart Dine-In QR' }}</title>
 
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23E84E1B'/><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='42' fill='white'>S.</text></svg>">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,12 +53,15 @@
             <!-- Left: Brand & Location -->
             <div class="flex items-center gap-6">
                 <div>
-                    <a href="{{ route('menu') }}" class="flex items-center gap-2 group">
-                        <span class="w-8 h-8 rounded-xl bg-[#E84E1B] text-white font-black flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform">S.</span>
-                        <h1 class="text-2xl font-black tracking-tight text-zinc-950">SUAP.</h1>
+                    <a href="{{ route('menu') }}" class="flex items-center gap-2.5 group">
+                        <img src="{{ asset('images/logo.png') }}" alt="Fountain Hide Logo" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform">
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-zinc-950 uppercase leading-none">FOUNTAIN HIDE</h1>
+                            <span class="text-[9px] tracking-widest text-[#E84E1B] uppercase font-extrabold block mt-0.5">COFFEE & ROASTERY</span>
+                        </div>
                     </a>
-                    <div class="flex items-center gap-2 mt-0.5 text-xs text-zinc-500">
-                        <span>Suap, Cikini</span>
+                    <div class="flex items-center gap-2 mt-1 text-xs text-zinc-500">
+                        <span>{{ $setting->branch ?? 'Fountain Hide Coffee & Roastery' }}</span>
                         <span>·</span>
                         <span class="hidden sm:inline">Makan di tempat</span>
                         <span class="sm:hidden">Dine-in</span>
@@ -69,12 +73,12 @@
                 <nav class="hidden md:flex items-center gap-1 ml-4 pl-4 border-l border-zinc-200">
                     <a href="{{ route('menu') }}" class="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ request()->routeIs('menu*') ? 'bg-zinc-950 text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
-                        <span>Menu Makanan</span>
+                        <span>Menu & Coffee</span>
                     </a>
 
                     <a href="{{ route('ai.chat') }}" class="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ request()->routeIs('ai*') ? 'bg-zinc-950 text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100' }}">
                         <svg class="w-4 h-4 text-[#E84E1B]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                        <span>Asisten Suap AI</span>
+                        <span>Asisten Fountain AI</span>
                     </a>
 
                     <a href="{{ route('orders.status') }}" class="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ request()->routeIs('orders*') ? 'bg-zinc-950 text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100' }}">
@@ -128,7 +132,7 @@
                 <span class="text-[11px] mt-1">Menu</span>
             </a>
 
-            <!-- Tab Asisten (Suap AI) -->
+            <!-- Tab Asisten (Fountain AI) -->
             <a href="{{ route('ai.chat') }}" class="flex flex-col items-center justify-center py-1 transition-all {{ request()->routeIs('ai*') ? 'text-[#E84E1B] font-bold' : 'text-zinc-400 hover:text-zinc-600 font-medium' }}">
                 <div class="relative">
                     <svg class="w-5 h-5 {{ request()->routeIs('ai*') ? 'scale-110' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>

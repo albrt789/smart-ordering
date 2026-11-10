@@ -15,7 +15,7 @@ class PaymentGatewayService
 
     public function __construct()
     {
-        $this->serverKey = config('services.midtrans.server_key', env('MIDTRANS_SERVER_KEY', 'SB-Mid-server-SUAPDEMOKEY123'));
+        $this->serverKey = config('services.midtrans.server_key', env('MIDTRANS_SERVER_KEY', 'SB-Mid-server-FOUNTAINDEMO123'));
         $this->merchantId = config('services.midtrans.merchant_id', env('MIDTRANS_MERCHANT_ID', 'G123456789'));
     }
 
@@ -33,7 +33,7 @@ class PaymentGatewayService
         $qrisImageUrl = null;
 
         // 1. Check if production/live Midtrans credentials are provided in .env
-        if ($this->serverKey && !str_contains($this->serverKey, 'SUAPDEMOKEY')) {
+        if ($this->serverKey && !str_contains($this->serverKey, 'FOUNTAINDEMO') && !str_contains($this->serverKey, 'SUAPDEMOKEY')) {
             try {
                 $isProduction = config('services.midtrans.is_production', false);
                 $endpoint = $isProduction 
@@ -88,7 +88,7 @@ class PaymentGatewayService
             'status' => 'pending',
             'qris_payload' => $rawQris,
             'raw_response' => [
-                'merchant' => 'SUAP CIKINI',
+                'merchant' => 'FOUNTAIN HIDE',
                 'order_id' => $order->order_number,
                 'amount' => $amount,
                 'currency' => 'IDR',
@@ -234,7 +234,7 @@ class PaymentGatewayService
         $tag26 = '26' . sprintf('%02d', strlen($merchantAccount)) . $merchantAccount;
 
         // Merchant Name & City (Tags 59 & 60)
-        $merchantName = 'SUAP CIKINI';
+        $merchantName = 'FOUNTAIN HIDE';
         $tag59 = '59' . sprintf('%02d', strlen($merchantName)) . $merchantName;
         $tag60 = '6007JAKARTA';
         $tag61 = '610510330';

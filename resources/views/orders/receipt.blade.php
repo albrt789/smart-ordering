@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Digital — {{ $order->order_number }} | {{ $setting->name ?? 'SUAP.' }}</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23E84E1B'/><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='42' fill='white'>S.</text></svg>">
+    <title>Struk Digital — {{ $order->order_number }} | {{ $setting->name ?? 'Fountain Hide' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,13 +36,11 @@
     <div class="receipt-card w-full max-w-sm bg-white rounded-3xl border border-zinc-200/90 p-6 sm:p-7 shadow-lg space-y-4">
         <!-- Receipt Header -->
         <div class="text-center space-y-1 pb-3 border-b-2 border-dashed border-zinc-200">
-            <div class="w-10 h-10 rounded-2xl bg-[#E84E1B] text-white font-black text-lg flex items-center justify-center mx-auto shadow-sm">
-                S.
-            </div>
-            <h1 class="text-xl font-black tracking-tight text-zinc-950 mt-1">{{ $setting->name ?? 'SUAP.' }}</h1>
-            <p class="text-[11px] text-zinc-500 font-medium">{{ $setting->branch ?? 'Cikini, Jakarta Pusat' }}</p>
-            <p class="text-[10px] text-zinc-400 leading-tight max-w-[240px] mx-auto">{{ $setting->address ?? 'Jl. Cikini Raya No. 42' }}</p>
-            <p class="text-[10px] text-zinc-400">Telp: {{ $setting->phone ?? '0812-3456-7890' }}</p>
+            <img src="{{ asset('images/logo.png') }}" alt="Fountain Hide Logo" class="h-12 w-auto object-contain mx-auto mb-1">
+            <h1 class="text-xl font-black tracking-tight text-zinc-950 uppercase">{{ $setting->name ?? 'FOUNTAIN HIDE' }}</h1>
+            <p class="text-[11px] text-[#E84E1B] font-extrabold uppercase tracking-wider">{{ $setting->branch ?? 'Coffee & Roastery' }}</p>
+            <p class="text-[10px] text-zinc-400 leading-tight max-w-[240px] mx-auto">{{ $setting->address ?? 'Jl. Senopati No. 88, Kebayoran Baru, Jakarta Selatan' }}</p>
+            <p class="text-[10px] text-zinc-400">Telp: {{ $setting->phone ?? '0812-8800-4499' }}</p>
         </div>
 
         <!-- Meta Details -->

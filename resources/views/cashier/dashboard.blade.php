@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Kasir — SUAP POS Restoran</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23E84E1B'/><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='42' fill='white'>K.</text></svg>">
+    <title>Dashboard Kasir & Barista — Fountain Hide POS</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,12 +25,12 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <!-- Left: Brand & Status -->
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-[#E84E1B] text-white font-black flex items-center justify-center text-sm shadow-md">
-                    S.
-                </div>
+                <a href="{{ route('cashier.dashboard') }}" class="flex items-center gap-2.5">
+                    <img src="{{ asset('images/logo-white.png') }}" alt="Logo" class="h-9 w-auto object-contain">
+                </a>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-lg font-black tracking-tight text-white">Kasir SUAP.</h1>
+                        <h1 class="text-lg font-black tracking-tight text-white uppercase">Kasir & Barista Fountain Hide</h1>
                         <span class="bg-zinc-800 text-zinc-300 border border-zinc-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                             POS Station
                         </span>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Keuangan Restoran — {{ $setting->name ?? 'SUAP.' }}</title>
+    <title>Laporan Keuangan Cafe — {{ $setting->name ?? 'Fountain Hide' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -31,9 +31,9 @@
         <!-- Letterhead Header -->
         <div class="border-b-2 border-zinc-900 pb-4 flex justify-between items-start">
             <div>
-                <h1 class="text-2xl font-black tracking-tight text-zinc-950">{{ $setting->name ?? 'SUAP RESTORAN' }}</h1>
-                <p class="text-xs text-zinc-600 font-medium">{{ $setting->branch ?? 'Cabang Cikini Jakarta Pusat' }}</p>
-                <p class="text-[11px] text-zinc-500 mt-1 max-w-md">{{ $setting->address ?? 'Jl. Cikini Raya No. 42' }} &bull; Telp: {{ $setting->phone ?? '0812-3456-7890' }}</p>
+                <h1 class="text-2xl font-black tracking-tight text-zinc-950 uppercase">{{ $setting->name ?? 'FOUNTAIN HIDE' }}</h1>
+                <p class="text-xs text-zinc-600 font-medium">{{ $setting->branch ?? 'Fountain Hide Coffee & Roastery' }}</p>
+                <p class="text-[11px] text-zinc-500 mt-1 max-w-md">{{ $setting->address ?? 'Jl. Senopati No. 88, Kebayoran Baru, Jakarta Selatan' }} &bull; Telp: {{ $setting->phone ?? '0812-8800-4499' }}</p>
             </div>
             <div class="text-right">
                 <span class="inline-block bg-zinc-900 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-md">Laporan Resmi</span>
@@ -108,7 +108,7 @@
         <div class="pt-8 flex justify-between text-xs text-zinc-700">
             <div>
                 <p>Dicetak pada: {{ now()->format('d F Y, H:i:s') }}</p>
-                <p class="text-[10px] text-zinc-400 mt-0.5">Sistem Laporan Otomatis SUAP POS</p>
+                <p class="text-[10px] text-zinc-400 mt-0.5">Sistem Laporan Otomatis Fountain Hide POS</p>
             </div>
             <div class="text-center w-48">
                 <p>Disetujui oleh,</p>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Administrator — SUAP Restoran</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2318181B'/><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='42' fill='%23F43F5E'>A.</text></svg>">
+    <title>Login Administrator — Fountain Hide Coffee</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
@@ -14,11 +14,11 @@
     <div class="w-full max-w-md space-y-6">
         <!-- Logo & Title -->
         <div class="text-center space-y-2">
-            <div class="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-800 text-rose-500 font-black text-2xl flex items-center justify-center mx-auto shadow-xl">
-                A.
+            <div class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 p-2.5 flex items-center justify-center mx-auto shadow-xl">
+                <img src="{{ asset('images/logo-white.png') }}" alt="Logo" class="w-full h-full object-contain">
             </div>
-            <h1 class="text-2xl font-black tracking-tight text-white">Administrator Restoran</h1>
-            <p class="text-xs text-zinc-400">Portal Manajemen Menu, Laporan Keuangan & Pengaturan</p>
+            <h1 class="text-2xl font-black tracking-tight text-white uppercase">Administrator Fountain Hide</h1>
+            <p class="text-xs text-zinc-400">Portal Manajemen Menu Kopi, Laporan Keuangan & Pengaturan</p>
         </div>
 
         <!-- Login Card -->
@@ -45,9 +45,9 @@
                         type="email" 
                         id="email" 
                         name="email" 
-                        value="{{ old('email', 'admin@suap.id') }}" 
+                        value="{{ old('email', 'admin@fountainhide.com') }}" 
                         required 
-                        placeholder="admin@suap.id"
+                        placeholder="admin@fountainhide.com"
                         class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all"
                     >
                 </div>
@@ -84,13 +84,13 @@
 
             <div class="pt-2 border-t border-zinc-800 text-center">
                 <p class="text-[11px] text-zinc-500">
-                    Akun demo admin: <code class="text-zinc-300 font-mono">admin@suap.id</code> / <code class="text-zinc-300 font-mono">admin123</code>
+                    Akun demo admin: <code class="text-zinc-300 font-mono">admin@fountainhide.com</code> / <code class="text-zinc-300 font-mono">admin123</code>
                 </p>
             </div>
         </div>
 
         <p class="text-center text-[11px] text-zinc-600">
-            SUAP Central Administration Panel &bull; Restoran Mitra
+            Fountain Hide Central Administration Panel &bull; Roastery & Cafe Management
         </p>
     </div>
 

@@ -34,9 +34,12 @@
 
     <!-- Printable Table Tent Card -->
     <div class="border border-zinc-200 rounded-3xl p-6 sm:p-10 bg-white text-center space-y-4 shadow-sm max-w-lg mx-auto" id="printable-card">
-        <span class="text-[10px] sm:text-xs uppercase tracking-widest font-black text-[#E84E1B] bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
-            SUAP. SMART DINE-IN SYSTEM
-        </span>
+        <div class="flex flex-col items-center gap-1.5 mb-1">
+            <img src="{{ asset('images/logo.png') }}" alt="Fountain Hide Logo" class="h-12 w-auto object-contain">
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest font-black text-[#E84E1B] bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+                FOUNTAIN HIDE COFFEE & ROASTERY
+            </span>
+        </div>
 
         <h4 class="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight">
             Scan untuk Pesan di {{ $table }}

@@ -37,7 +37,7 @@
                     </div>
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold tracking-tight">
-                            Suap, Cikini · {{ $table }}
+                            {{ $setting->name ?? 'Fountain Hide' }} · {{ $table }}
                         </h4>
                         <p class="text-[11px] sm:text-xs text-zinc-400">
                             Makan di tempat · Pesanan kami antar ke mejamu
@@ -90,7 +90,7 @@
                                             @elseif(!empty($item['is_ai_pick']))
                                                 <span class="text-[9px] sm:text-[10px] font-bold text-[#E84E1B] bg-orange-50 border border-orange-200/60 px-2 py-0.5 rounded-md flex items-center gap-1">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                                                    <span>Pilihan Suap AI</span>
+                                                    <span>Pilihan Fountain AI</span>
                                                 </span>
                                             @endif
                                         </div>

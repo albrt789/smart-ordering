@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Kasir Restoran — SUAP POS</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23141416'/><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='42' fill='%23E84E1B'>K.</text></svg>">
+    <title>Login Kasir & Barista — Fountain Hide POS</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
@@ -14,10 +14,10 @@
     <div class="w-full max-w-md space-y-6">
         <!-- Logo & Title -->
         <div class="text-center space-y-2">
-            <div class="w-14 h-14 rounded-2xl bg-[#E84E1B] text-white font-black text-2xl flex items-center justify-center mx-auto shadow-lg shadow-orange-950/50">
-                S.
+            <div class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 p-2.5 flex items-center justify-center mx-auto shadow-xl">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-contain">
             </div>
-            <h1 class="text-2xl font-black tracking-tight text-white">Kasir SUAP.</h1>
+            <h1 class="text-2xl font-black tracking-tight text-white uppercase">Kasir & Barista Fountain Hide</h1>
             <p class="text-xs text-zinc-400">Portal Operasional Kasir & Pengelolaan Pesanan Masuk</p>
         </div>
 
@@ -45,9 +45,9 @@
                         type="email" 
                         id="email" 
                         name="email" 
-                        value="{{ old('email', 'kasir@suap.id') }}" 
+                        value="{{ old('email', 'kasir@fountainhide.com') }}" 
                         required 
-                        placeholder="kasir@suap.id"
+                        placeholder="kasir@fountainhide.com"
                         class="w-full bg-zinc-950 border border-zinc-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#E84E1B] focus:ring-1 focus:ring-[#E84E1B] transition-all"
                     >
                 </div>
@@ -84,13 +84,13 @@
 
             <div class="pt-2 border-t border-zinc-800 text-center">
                 <p class="text-[11px] text-zinc-500">
-                    Akun demo: <code class="text-zinc-300 font-mono">kasir@suap.id</code> / <code class="text-zinc-300 font-mono">kasir123</code>
+                    Akun demo: <code class="text-zinc-300 font-mono">kasir@fountainhide.com</code> / <code class="text-zinc-300 font-mono">kasir123</code>
                 </p>
             </div>
         </div>
 
         <p class="text-center text-[11px] text-zinc-600">
-            SUAP Restaurant Management System &bull; Versi 2.0
+            Fountain Hide POS Management System &bull; Versi 2.0
         </p>
     </div>
 

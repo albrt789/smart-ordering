@@ -415,7 +415,7 @@ class AdminController extends Controller
 
     private function exportCsv($orders, $period, $start, $end)
     {
-        $fileName = 'Laporan-Keuangan-SUAP-' . $period . '-' . date('Ymd-His') . '.csv';
+        $fileName = 'Laporan-Keuangan-Fountain-Hide-' . $period . '-' . date('Ymd-His') . '.csv';
 
         $headers = [
             'Content-type' => 'text/csv; charset=UTF-8',

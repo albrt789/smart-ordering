@@ -102,7 +102,7 @@
 
             <div>
                 <label class="text-xs font-bold text-zinc-300 block mb-1">Email Login</label>
-                <input type="email" name="email" required placeholder="rian@suap.id" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                <input type="email" name="email" required placeholder="rian@fountainhide.com" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
             </div>
 
             <div>

@@ -36,7 +36,7 @@
                     @elseif($dish->is_signature)
                         <div class="absolute top-3.5 left-3.5 flex items-center gap-1.5 bg-zinc-950/85 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
                             <svg class="w-3.5 h-3.5 text-[#E84E1B]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                            <span>FAVORIT SUAP</span>
+                            <span>SIGNATURE FOUNTAIN HIDE</span>
                         </div>
                     @endif
                 </div>
@@ -47,7 +47,7 @@
                     <div class="text-xs text-amber-900 leading-relaxed">
                         <span class="font-bold block mb-0.5">Punya alergi makanan?</span>
                         <p class="text-amber-800/90 font-normal">
-                            {{ $dish->allergens ?? 'Restoran kami menggunakan bahan-bahan pilihan. Jika memiliki alergi tertentu, tanyakan info bahan ke Asisten Suap AI.' }}
+                            {{ $dish->allergens ?? 'Coffee shop kami menggunakan bahan-bahan pilihan. Jika memiliki alergi tertentu atau ingin opsi susu oat/almond, tanyakan ke Asisten Fountain AI.' }}
                         </p>
                     </div>
                 </div>

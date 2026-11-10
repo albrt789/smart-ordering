@@ -89,7 +89,7 @@
                     <!-- Tent-Card Preview -->
                     <div class="my-4 p-4 bg-white text-zinc-900 rounded-2xl text-center shadow-inner space-y-2">
                         <div class="text-[10px] font-black uppercase tracking-wider text-[#E84E1B]">
-                            SUAP DINE-IN SMART ORDER
+                            FOUNTAIN HIDE COFFEE & ROASTERY
                         </div>
                         <div class="w-40 h-40 mx-auto bg-zinc-50 p-2 rounded-xl border border-zinc-200 flex items-center justify-center">
                             <img src="{{ $qrApiUrl }}" alt="QR {{ $tbl->table_number }}" class="w-full h-full object-contain">

@@ -40,10 +40,10 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-extrabold text-zinc-900 leading-snug">
-                            Tanya dulu, suap kemudian.
+                            Kopi nikmat, cerita hangat.
                         </h3>
                         <p class="text-xs text-zinc-500 mt-1">
-                            Menu, bahan, dan pesanan — di satu chat.
+                            Racikan kopi, beans, dan pesanan — di satu chat.
                         </p>
                         <span class="inline-block mt-1.5 text-[10px] font-mono text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-md">
                             Engine: {{ $aiProvider }} · {{ $aiModel }}
@@ -57,17 +57,17 @@
                         PINTASAN PERTANYAAN:
                     </span>
                     <div class="flex flex-wrap gap-1.5">
-                        <button type="button" onclick="sendQuickPrompt('Cek alergi')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
-                            Cek alergi
+                        <button type="button" onclick="sendQuickPrompt('Rekomendasi kopi')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
+                            Rekomendasi kopi
                         </button>
-                        <button type="button" onclick="sendQuickPrompt('Status pesanan')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
-                            Status pesanan
+                        <button type="button" onclick="sendQuickPrompt('Pilihan oat milk')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
+                            Pilihan oat milk
                         </button>
-                        <button type="button" onclick="sendQuickPrompt('Camilan nabati')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
-                            Camilan nabati
+                        <button type="button" onclick="sendQuickPrompt('Biji kopi V60')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
+                            Biji kopi V60
                         </button>
-                        <button type="button" onclick="sendQuickPrompt('Menu pedas')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
-                            Menu pedas
+                        <button type="button" onclick="sendQuickPrompt('Password wifi')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all">
+                            Password Wi-Fi
                         </button>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
 
             <!-- Disclaimer Box -->
             <div class="bg-zinc-50 border border-zinc-200/70 rounded-2xl p-4 text-[11px] text-zinc-500 leading-relaxed shadow-2xs">
-                💡 <span class="font-semibold text-zinc-700">Tips Suap AI:</span> Anda dapat menanyakan komposisi rempah, tingkat kepedasan, pilihan vegetarian, hingga perkiraan waktu antar ke {{ strtolower($table) }}.
+                💡 <span class="font-semibold text-zinc-700">Tips Fountain AI:</span> Anda dapat menanyakan menu signature, rekomendasi mocktail segar, profil manual brew, opsi susu oat/almond, hingga info Wi-Fi cafe.
             </div>
         </div>
 
@@ -101,7 +101,7 @@
                     </button>
                 </div>
                 <p class="text-[10px] text-zinc-400 text-center">
-                    Suap AI bisa keliru. Info alergi perlu dikonfirmasi ke tim restoran.
+                    Fountain Hide AI bisa keliru. Info alergi dapat dikonfirmasi langsung ke barista.
                 </p>
             </form>
 
@@ -127,7 +127,7 @@
                         <div class="space-y-2.5 max-w-[95%] sm:max-w-[85%]">
                             <div class="flex items-center gap-1.5 text-xs font-bold text-zinc-700">
                                 <svg class="w-4 h-4 text-[#E84E1B]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                                <span>SUAP AI</span>
+                                <span>FOUNTAIN HIDE AI</span>
                             </div>
 
                             <div class="bg-zinc-50 border border-zinc-200/90 text-zinc-800 text-xs sm:text-sm rounded-2xl rounded-tl-xs p-4 shadow-2xs leading-relaxed">

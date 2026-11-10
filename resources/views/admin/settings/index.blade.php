@@ -5,8 +5,8 @@
 
     <!-- Top Headline -->
     <div>
-        <h2 class="text-2xl font-black text-white tracking-tight">Profil & Pengaturan Restoran</h2>
-        <p class="text-xs text-zinc-400 mt-1">Data profil ini otomatis disinkronkan ke halaman pelanggan dan basis data Asisten Suap AI.</p>
+        <h2 class="text-2xl font-black text-white tracking-tight">Profil & Pengaturan Coffee Shop</h2>
+        <p class="text-xs text-zinc-400 mt-1">Data profil ini otomatis disinkronkan ke halaman pelanggan dan basis data Asisten Fountain AI.</p>
     </div>
 
     <!-- Settings Form -->

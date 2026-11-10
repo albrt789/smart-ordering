@@ -15,24 +15,24 @@
                 <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="text-[10px] uppercase tracking-widest font-extrabold text-[#E84E1B] bg-orange-950/80 px-2 py-0.5 rounded-md border border-orange-800/60">
-                                RASA LOKAL. MOOD MAKSIMAL.
+                            <span class="text-[10px] uppercase tracking-widest font-extrabold text-[#E84E1B] bg-orange-950/80 px-2.5 py-0.5 rounded-md border border-orange-800/60">
+                                ARTISAN ROASTERY & COFFEE BAR
                             </span>
-                            <span class="hidden sm:inline text-xs text-zinc-400">· {{ $setting->name ?? 'Suap' }} {{ $setting->branch ?? 'Cikini' }}</span>
+                            <span class="hidden sm:inline text-xs text-zinc-400">· {{ $setting->name ?? 'Fountain Hide' }}</span>
                         </div>
                         <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight mb-2">
-                            Enaknya,<br class="sm:hidden">
-                            langsung suap.
+                            Artisan Coffee,<br class="sm:hidden">
+                            Crafted Daily.
                         </h2>
                         <p class="text-xs sm:text-sm text-zinc-400">
-                            Pilih menu favoritmu, bayar via QRIS, pesanan kami antar ke <span class="text-white font-bold">{{ strtolower($table) }}</span>.
+                            Pilih racikan kopi dan minuman favoritmu, bayar via QRIS, pesanan kami antar ke <span class="text-white font-bold">{{ strtolower($table) }}</span>.
                         </p>
                     </div>
                     <div class="hidden sm:flex flex-col items-end shrink-0 text-right">
-                        <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-700/80 flex items-center justify-center text-[#E84E1B] shadow-inner mb-2">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M7 7h10v10"/></svg>
+                        <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-700/80 flex items-center justify-center p-2 shadow-inner mb-2">
+                            <img src="{{ asset('images/logo-white.png') }}" alt="Logo" class="w-full h-full object-contain">
                         </div>
-                        <span class="text-[11px] text-zinc-400 font-semibold">Estimasi 15-20 mnt</span>
+                        <span class="text-[11px] text-zinc-400 font-semibold">Estimasi 3–7 mnt</span>
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                         type="text" 
                         name="q" 
                         value="{{ $search ?? '' }}" 
-                        placeholder="Lagi ingin makan apa?" 
+                        placeholder="Lagi ingin minum apa? Cari kopi, mocktail, teh..." 
                         class="w-full bg-white border border-zinc-200/90 rounded-2xl py-2.5 pl-10 pr-4 text-xs sm:text-sm placeholder:text-zinc-400 text-zinc-800 focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-all shadow-sm"
                     >
                     @if(!empty($search))
@@ -175,10 +175,10 @@
                         </div>
                         <div>
                             <h4 class="text-xs font-bold text-zinc-900 group-hover:text-[#E84E1B] transition-colors">
-                                Bingung pilih? Tanya Suap AI.
+                                Bingung pilih kopi? Tanya Fountain Hide AI.
                             </h4>
                             <p class="text-[11px] text-zinc-500 mt-0.5">
-                                Rekomendasi, alergi, sampai soal pesanan.
+                                Profil rasa biji kopi, oat milk, sampai rekomendasi pairing pastry.
                             </p>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
 
         </div>
 
-        <!-- Desktop Sidebar Column (Right 4 cols on desktop: Sticky Cart & Suap AI) -->
+        <!-- Desktop Sidebar Column (Right 4 cols on desktop: Sticky Cart & Fountain AI) -->
         <div class="hidden lg:block lg:col-span-4 space-y-5 sticky top-20">
 
             <!-- Desktop Sticky Live Cart Panel -->
@@ -276,22 +276,22 @@
                 @endif
             </div>
 
-            <!-- Desktop Suap AI Widget Box -->
+            <!-- Desktop Fountain AI Widget Box -->
             <div class="bg-white border border-zinc-200/80 rounded-3xl p-5 shadow-sm space-y-3">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-[#E84E1B]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-bold text-zinc-900">Asisten Suap AI</h4>
-                        <p class="text-[11px] text-zinc-400">Siap bantu cek alergi & info bahan</p>
+                        <h4 class="text-xs font-bold text-zinc-900">Asisten Fountain AI</h4>
+                        <p class="text-[11px] text-zinc-400">Barista concierge & info beans</p>
                     </div>
                 </div>
                 <p class="text-xs text-zinc-600 leading-relaxed">
-                    Mau tahu makanan bebas susu, gluten, atau tingkat kepedasan? Chat asisten AI Suap sekarang.
+                    Mau tahu profil beans, pilihan oat milk, atau rekomendasi pairing pastry hangat? Chat barista AI sekarang.
                 </p>
                 <a href="{{ route('ai.chat') }}" class="block text-center bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm">
-                    Buka Chat Suap AI →
+                    Buka Chat Fountain AI →
                 </a>
             </div>
 

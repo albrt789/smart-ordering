@@ -69,7 +69,7 @@
                             <!-- Merchant & Amount Info -->
                             <div>
                                 <p class="text-xs font-extrabold text-zinc-400 tracking-wider uppercase">
-                                    SUAP CIKINI · {{ $order->order_number }} · {{ $order->table_number }}
+                                    FOUNTAIN HIDE · {{ $order->order_number }} · {{ $order->table_number }}
                                 </p>
                                 <div class="text-3xl sm:text-4xl font-black text-zinc-950 mt-1 tracking-tight">
                                     Rp{{ number_format($order->total_amount, 0, ',', '.') }}
@@ -329,7 +329,7 @@
                                     7. Selesai
                                 </span>
                                 <p class="text-[11px] sm:text-xs text-zinc-500 mt-0.5">
-                                    Makanan telah disajikan di mejamu. Selamat menikmati suapannya!
+                                    Pesanan telah disajikan di mejamu. Selamat menikmati kopi & santapan pilihanmu!
                                 </p>
                             </div>
                         </div>
@@ -411,7 +411,7 @@
                                 <span class="text-xs sm:text-sm font-bold text-zinc-800 group-hover:text-[#E84E1B] transition-colors block">
                                     Ada pertanyaan soal pesanan?
                                 </span>
-                                <span class="text-[11px] text-zinc-400">Tanyakan ke Asisten Suap AI</span>
+                                <span class="text-[11px] text-zinc-400">Tanyakan ke Asisten Fountain AI</span>
                             </div>
                         </div>
                         <svg class="w-4 h-4 text-zinc-400 group-hover:text-[#E84E1B] group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>

@@ -18,15 +18,16 @@ class RestaurantSetting extends Model
         return self::firstOrCreate(
             ['id' => 1],
             [
-                'name' => 'SUAP.',
-                'branch' => 'Suap, Cikini',
-                'address' => 'Jl. Cikini Raya No. 45, Menteng, Jakarta Pusat',
-                'phone' => '0812-9876-5432',
-                'email' => 'halo@suap.id',
-                'open_hours' => '10:00 - 22:00 WIB',
+                'name' => 'Fountain Hide',
+                'branch' => 'Fountain Hide Coffee',
+                'address' => 'Jl. Tirta Bhakti No. 23C',
+                'phone' => '0812-8800-4499',
+                'email' => 'hello@fountainhide.com',
+                'open_hours' => '08:00 - 23:00 WIB',
                 'service_fee_pct' => 5.00,
                 'pbjt_tax_pct' => 10.00,
-                'description' => 'Restoran modern menyajikan hidangan lokal Nusantara bercita rasa otentik dengan pelayanan pesan instan dari meja.'
+                'description' => 'Specialty coffee roastery, artisanal brews, and signature coffee drinks. Nikmati pengalaman dine-in instan pesan langsung dari meja tanpa antre.',
+                'logo' => '/images/logo.png',
             ]
         );
     }

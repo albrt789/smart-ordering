@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitchen Display System (KDS) — SUAP.</title>
+    <title>Barista & Kitchen Display System (KDS) — Fountain Hide</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
@@ -13,19 +14,19 @@
     <!-- Header -->
     <header class="bg-zinc-900 border-b border-zinc-800 px-6 py-4 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-[#E84E1B]">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6v-7.13zM6 17h12"/></svg>
+            <div class="w-11 h-11 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center p-2">
+                <img src="{{ asset('images/logo-white.png') }}" alt="Logo" class="w-full h-full object-contain">
             </div>
             <div>
-                <h1 class="text-lg font-black tracking-tight">Kitchen Display System (KDS) — SUAP.</h1>
-                <p class="text-xs text-zinc-400">Layar monitoring pesanan dapur real-time</p>
+                <h1 class="text-lg font-black tracking-tight uppercase">Barista & Kitchen Display System (KDS) — Fountain Hide</h1>
+                <p class="text-xs text-zinc-400">Layar monitoring pesanan seduhan kopi & dapur real-time</p>
             </div>
         </div>
 
         <div class="flex items-center gap-3">
             <div class="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-3 py-1.5 rounded-full font-bold">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Dapur Siaga</span>
+                <span>Bar & Dapur Siaga</span>
             </div>
             <a href="{{ route('menu') }}" class="text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-1.5 rounded-xl transition-all">
                 ← Kembali ke Menu

@@ -37,7 +37,7 @@
                         Tinggal duduk manis.
                     </h2>
                     <p class="text-xs sm:text-sm text-zinc-500 mt-1">
-                        {{ $setting->name ?? 'Suap, Cikini' }} · Makan di tempat · {{ $table }}
+                        {{ $setting->name ?? 'Fountain Hide' }} · Makan di tempat · {{ $table }}
                     </p>
                 </div>
 
@@ -166,7 +166,7 @@
 
                     <div>
                         <p class="text-[11px] uppercase font-bold text-zinc-400 tracking-wider">
-                            {{ $setting->name ?? 'SUAP CIKINI' }}
+                            {{ $setting->name ?? 'FOUNTAIN HIDE' }}
                         </p>
                         <div class="text-3xl font-black text-zinc-950 mt-1">
                             Rp{{ number_format($grandTotal, 0, ',', '.') }}
